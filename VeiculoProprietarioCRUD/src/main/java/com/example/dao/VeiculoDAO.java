@@ -150,4 +150,55 @@ public class VeiculoDAO {
             throw e;
         }
     }
+    
+    public List<Veiculo> searchVeiculos(String placa, String renavam) throws SQLException {
+        List<Veiculo> veiculos = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT v.id, v.placa, v.renavam, v.id_status, v.id_prop, p.nome AS nome_proprietario, s.status AS nome_status ")
+                          .append("FROM veiculo v ")
+                          .append("JOIN proprietario p ON v.id_prop = p.id ")
+                          .append("LEFT JOIN status_veiculo s ON v.id_status = s.id ");
+        
+        if (placa != null && !placa.isEmpty()) {
+            sql.append("WHERE v.placa = ?");
+        }
+        
+        if (renavam != null && !renavam.isEmpty()) {
+            if (sql.toString().contains("WHERE")) {
+                sql.append(" AND v.renavam = ?");
+            } else {
+                sql.append("WHERE v.renavam = ?");
+            }
+        }
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql.toString())) {
+
+            int index = 1;
+            if (placa != null && !placa.isEmpty()) {
+                ps.setString(index++, placa);
+            }
+            if (renavam != null && !renavam.isEmpty()) {
+                ps.setString(index++, renavam);
+            }
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Veiculo veiculo = new Veiculo(
+                        rs.getInt("id"),
+                        rs.getString("placa"),
+                        rs.getString("renavam"),
+                        rs.getInt("id_prop"),
+                        rs.getInt("id_status"),
+                        rs.getString("nome_proprietario")
+                    );
+                    veiculo.setNomeStatus(rs.getString("nome_status"));
+                    veiculos.add(veiculo);
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Erro ao buscar veículos por placa ou renavam", e);
+            throw e;
+        }
+        return veiculos;
+    }
 }

@@ -26,6 +26,8 @@ public class VeiculoServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
         String statusParam = request.getParameter("status");
+        String placaParam = request.getParameter("placa");
+        String renavamParam = request.getParameter("renavam");
 
         try {
             if ("list".equals(action) || action == null) {
@@ -34,7 +36,7 @@ public class VeiculoServlet extends HttpServlet {
                     int status = Integer.parseInt(statusParam);
                     list = dao.getVeiculosByStatus(status);
                 } else {
-                    list = dao.getAllVeiculos();
+                    list = dao.searchVeiculos(placaParam, renavamParam);
                 }
                 request.setAttribute("veiculos", list);
                 request.setAttribute("selectedStatus", statusParam);
@@ -55,6 +57,7 @@ public class VeiculoServlet extends HttpServlet {
             throw new ServletException("Erro ao processar a solicitação", e);
         }
     }
+
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
