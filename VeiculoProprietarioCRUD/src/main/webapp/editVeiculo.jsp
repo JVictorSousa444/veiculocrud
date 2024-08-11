@@ -34,6 +34,16 @@
             border: 1px solid #ccc;
             border-radius: 4px;
         }
+        input[type="number"] {
+            /* Adicionando restrição de valor mínimo */
+            -moz-appearance: textfield; /* Remover setas no Firefox */
+        }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            /* Remover setas no Chrome e Safari */
+            -webkit-appearance: none;
+            margin: 0;
+        }
         input[type="submit"] {
             background-color: #f0ad4e;
             color: white;
@@ -70,7 +80,7 @@
             <input type="text" id="renavam" name="renavam" value="${veiculo.renavam}" required>
             
             <label for="id_prop">ID Proprietário:</label>
-            <input type="number" id="id_prop" name="id_prop" value="${veiculo.idProp}" required>
+            <input type="number" id="id_prop" name="id_prop" value="${veiculo.idProp}" min="1" required>
             
             <input type="submit" value="Atualizar">
         </form>

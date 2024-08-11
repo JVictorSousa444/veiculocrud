@@ -74,7 +74,7 @@ public class ProprietarioDAO {
     
     public List<Proprietario> listByStatus(boolean ativo) throws SQLException {
         List<Proprietario> proprietarios = new ArrayList<>();
-        String sql = "SELECT * FROM proprietario WHERE ativo = ?";
+        String sql = "SELECT * FROM proprietario WHERE ativo = ? ORDER BY id ASC";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setBoolean(1, ativo);

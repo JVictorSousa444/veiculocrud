@@ -8,9 +8,9 @@ import java.util.logging.Logger;
 
 public class DatabaseConnection {
     private static final Logger LOGGER = Logger.getLogger(DatabaseConnection.class.getName());
-    private static final String URL = "jdbc:postgresql://localhost:5432/bdtreinamento";
-    private static final String USER = "lucas";
-    private static final String PASSWORD = "jl3go5c3";
+    private static final String URL = "jdbc:postgresql://localhost:5432/veiculocrud";
+    private static final String USER = "postgres";
+    private static final String PASSWORD = "admin123";
 
     public static Connection getConnection() throws SQLException {
         try {

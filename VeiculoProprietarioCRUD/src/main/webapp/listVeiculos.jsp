@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html>
 <html>
 <head>
     <title>Listagem de Veículos</title>
@@ -19,9 +20,20 @@
             color: #333;
             margin-bottom: 20px;
         }
+        .filter {
+            margin-bottom: 20px;
+        }
+        .filter label {
+            margin-right: 10px;
+        }
+        .filter select {
+            padding: 5px;
+            font-size: 14px;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 10px;
         }
         table, th, td {
             border: 1px solid #ddd;
@@ -60,27 +72,51 @@
 <body>
     <div class="container">
         <h1>Veículos</h1>
+        
+        <div class="filter">
+            <form action="veiculos" method="get">
+                <label for="status">Filtrar por Status:</label>
+                <select id="status" name="status">
+                    <option value="">Todos</option>
+                    <option value="1" <c:if test="${selectedStatus == '1'}">selected</c:if>>Em Circulação</option>
+                    <option value="2" <c:if test="${selectedStatus == '2'}">selected</c:if>>Baixado</option>
+                    <option value="3" <c:if test="${selectedStatus == '3'}">selected</c:if>>Em Processo de Transferência</option>
+                    <option value="4" <c:if test="${selectedStatus == '4'}">selected</c:if>>Veículo de outra UF</option>
+                    <option value="5" <c:if test="${selectedStatus == '5'}">selected</c:if>>Dados de Pré-Cadastro</option>
+                </select>
+                <input type="submit" value="Filtrar">
+            </form>
+        </div>
+        
         <a href="addVeiculo.jsp" class="add-btn">Adicionar Veículo</a>
+        
         <table>
-            <tr>
-                <th>ID</th>
-                <th>Placa</th>
-                <th>Renavam</th>
-                <th>ID Proprietário</th>
-                <th>Ações</th>
-            </tr>
-            <c:forEach var="veiculo" items="${veiculos}">
+            <thead>
                 <tr>
-                    <td>${veiculo.id}</td>
-                    <td>${veiculo.placa}</td>
-                    <td>${veiculo.renavam}</td>
-                    <td>${veiculo.idProp}</td>
-                    <td class="actions">
-                        <a href="veiculos?action=edit&id=${veiculo.id}">Editar</a>
-                        <a href="veiculos?action=delete&id=${veiculo.id}" onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
-                    </td>
+                    <th>ID</th>
+                    <th>Placa</th>
+                    <th>Renavam</th>
+                    <th>ID Proprietário</th>
+                    <th>Nome Proprietário</th>
+                    <th>Status do Veículo</th>
+                    <th>Ações</th>
                 </tr>
-            </c:forEach>
+            </thead>
+            <tbody>
+                <c:forEach var="veiculo" items="${veiculos}">
+                    <tr>
+                        <td>${veiculo.id}</td>
+                        <td>${veiculo.placa}</td>
+                        <td>${veiculo.renavam}</td>
+                        <td>${veiculo.idProp}</td>
+                        <td>${veiculo.nomeProprietario}</td>
+                        <td>${veiculo.nomeStatus}</td>
+                        <td class="actions">
+                            <a href="veiculos?action=edit&id=${veiculo.id}">Editar</a>
+                        </td>
+                    </tr>
+                </c:forEach>
+            </tbody>
         </table>
     </div>
 </body>

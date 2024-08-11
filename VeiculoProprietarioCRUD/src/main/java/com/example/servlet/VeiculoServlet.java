@@ -25,15 +25,23 @@ public class VeiculoServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
+        String statusParam = request.getParameter("status");
 
         try {
-            if ("list".equals(action)) {
-                List<Veiculo> list = dao.getAllVeiculos();
+            if ("list".equals(action) || action == null) {
+                List<Veiculo> list;
+                if (statusParam != null && !statusParam.isEmpty()) {
+                    int status = Integer.parseInt(statusParam);
+                    list = dao.getVeiculosByStatus(status);
+                } else {
+                    list = dao.getAllVeiculos();
+                }
                 request.setAttribute("veiculos", list);
+                request.setAttribute("selectedStatus", statusParam);
                 request.getRequestDispatcher("/listVeiculos.jsp").forward(request, response);
             } else if ("edit".equals(action)) {
                 int id = Integer.parseInt(request.getParameter("id"));
-                Veiculo v = dao.getVeiculo(id);
+                Veiculo v = dao.getVeiculoById(id);
                 request.setAttribute("veiculo", v);
                 request.getRequestDispatcher("/editVeiculo.jsp").forward(request, response);
             } else if ("delete".equals(action)) {
@@ -44,7 +52,7 @@ public class VeiculoServlet extends HttpServlet {
                 response.sendRedirect("veiculos?action=list");
             }
         } catch (SQLException e) {
-            throw new ServletException(e);
+            throw new ServletException("Erro ao processar a solicitação", e);
         }
     }
 
@@ -58,6 +66,7 @@ public class VeiculoServlet extends HttpServlet {
                 v.setPlaca(request.getParameter("placa"));
                 v.setRenavam(request.getParameter("renavam"));
                 v.setIdProp(Integer.parseInt(request.getParameter("id_prop")));
+                v.setIdStatus(Integer.parseInt(request.getParameter("id_status")));
                 dao.addVeiculo(v);
                 response.sendRedirect("veiculos?action=list");
             } else if ("update".equals(action)) {
@@ -66,11 +75,14 @@ public class VeiculoServlet extends HttpServlet {
                 v.setPlaca(request.getParameter("placa"));
                 v.setRenavam(request.getParameter("renavam"));
                 v.setIdProp(Integer.parseInt(request.getParameter("id_prop")));
+                v.setIdStatus(Integer.parseInt(request.getParameter("id_status")));
                 dao.updateVeiculo(v);
+                response.sendRedirect("veiculos?action=list");
+            } else {
                 response.sendRedirect("veiculos?action=list");
             }
         } catch (SQLException e) {
-            throw new ServletException(e);
+            throw new ServletException("Erro ao processar a solicitação", e);
         }
     }
 }
